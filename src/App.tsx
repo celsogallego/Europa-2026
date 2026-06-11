@@ -394,7 +394,7 @@ export default function App() {
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 font-mono">Roteiro de Viagem • Celso Gallego & Namorada</p>
+              <p className="text-xs text-slate-400 font-mono">Roteiro de Viagem • Celso Gallego & Vania Carvalho</p>
               <p className="text-sm font-semibold text-white">Outubro a Novembro de 2026 • 16 Dias / 15 Noites</p>
             </div>
           </div>
@@ -470,7 +470,7 @@ export default function App() {
                       </div>
                       <div>
                         <p className="text-xs text-slate-500">Viajantes</p>
-                        <p className="text-sm font-medium text-white">Celso Gallego & Namorada</p>
+                        <p className="text-sm font-medium text-white">Celso Gallego & Vania Carvalho</p>
                       </div>
                     </li>
 
