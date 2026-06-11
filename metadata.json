@@ -1,0 +1,6 @@
+{
+  "name": "Roteiro Europa 2026",
+  "description": "Cronograma de viagem interativo para roteiro europeu com fotos, detalhes de hospedagem e calculadora de custos em tempo real.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
