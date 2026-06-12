@@ -166,11 +166,18 @@ const LOCAL_IMAGE_PATHS: Record<string, string[]> = {
   ]
 };
 
+const getImgSrc = (img: string) => {
+  if (img.startsWith("http")) return img;
+  const cleanPath = img.startsWith("/") ? img.substring(1) : img;
+  const baseUrl = (import.meta as any).env?.BASE_URL || "";
+  return `${baseUrl}${cleanPath}`;
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<"viagem" | "roteiro" | "custos">("viagem");
   const [activeTrecho, setActiveTrecho] = useState<string>("trecho-1");
   const [showHowToUpload, setShowHowToUpload] = useState<boolean>(false);
-  const [useLocalImages, setUseLocalImages] = useState<boolean>(true);
+  const [useLocalImages, setUseLocalImages] = useState<boolean>(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState<string>("");
 
@@ -599,8 +606,8 @@ export default function App() {
             {stages.map(stage => {
               if (stage.id !== activeTrecho) return null;
               
-              // Use local image paths from uploaded files
-              const images = LOCAL_IMAGE_PATHS[stage.id] || [];
+              // Use local or illustrative image paths
+              const images = (useLocalImages ? LOCAL_IMAGE_PATHS[stage.id] : TRAVEL_PHOTOS[stage.id]) || [];
 
               return (
                 <div key={stage.id} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -647,11 +654,30 @@ export default function App() {
 
                   {/* Photo Gallery Column */}
                   <div className="lg:col-span-5 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs uppercase tracking-widest font-mono text-slate-400 font-medium">Galeria Ilustrada</h4>
-                      <span className="text-[10px] font-mono text-slate-500">
-                        Fotos do Roteiro
-                      </span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-2">
+                      <h4 className="text-xs uppercase tracking-widest font-mono text-slate-400 font-medium">Fotos do Trecho</h4>
+                      <div className="flex items-center bg-slate-900/60 border border-slate-900/60 p-0.5 rounded-lg text-[10px] self-start sm:self-auto">
+                        <button
+                          onClick={() => setUseLocalImages(false)}
+                          className={`px-2 py-1 rounded transition-all font-medium cursor-pointer ${
+                            !useLocalImages
+                              ? "bg-amber-500/20 text-amber-400 font-semibold"
+                              : "text-slate-400 hover:text-slate-200"
+                          }`}
+                        >
+                          Ilustrativas
+                        </button>
+                        <button
+                          onClick={() => setUseLocalImages(true)}
+                          className={`px-2 py-1 rounded transition-all font-medium cursor-pointer ${
+                            useLocalImages
+                              ? "bg-amber-500/20 text-amber-400 font-semibold"
+                              : "text-slate-400 hover:text-slate-200"
+                          }`}
+                        >
+                          Reais (Word)
+                        </button>
+                      </div>
                     </div>
 
                     {images.length > 0 ? (
@@ -662,7 +688,7 @@ export default function App() {
                             className="group relative rounded-xl border border-slate-900 overflow-hidden bg-slate-950 aspect-[4/3] shadow-md hover:border-slate-800 transition-colors"
                           >
                             <img 
-                              src={img} 
+                              src={getImgSrc(img)} 
                               alt={`${stage.title} view ${i + 1}`}
                               referrerPolicy="no-referrer"
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -678,6 +704,13 @@ export default function App() {
                         <AlertCircle className="w-8 h-8 text-slate-600 mx-auto" />
                         <p className="text-xs font-medium">Nenhuma foto encontrada para este trecho final.</p>
                         <p className="text-[10px] text-slate-600">Este trecho compreende noites de trânsito ou retorno internacional direto.</p>
+                      </div>
+                    )}
+
+                    {useLocalImages && (
+                      <div className="p-3 bg-amber-500/5 rounded-xl border border-amber-500/15 text-[10px] text-slate-400 leading-relaxed shadow-sm">
+                        <span className="font-semibold text-amber-400/95 block mb-0.5">📂 Como exibir suas fotos do Word no GitHub:</span>
+                        Crie uma pasta chamada <code className="text-amber-300 font-mono bg-slate-950 px-1 py-0.5 rounded">public/images</code> no seu repositório GitHub e adicione as imagens correspondentes (<code className="text-amber-300 font-mono">image001.jpg</code>, etc.). Assim elas aparecerão aqui automaticamente!
                       </div>
                     )}
 
